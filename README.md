@@ -8,9 +8,9 @@ The technical name of the module is `seatmap_pro_event`. It depends on `website_
 
 **Status:** early version for Odoo 19.0. The module's 40 tests pass on Odoo 19.0 Community (commit `4104bb5`).
 With the module installed, the post-install tests of `event`, `event_sale`, `website_event`,
-`website_event_sale`, and `website_sale` also pass. In a browser, the seat page loads the renderer and asks the
-Seatmap Pro public API for the event. A full purchase in a browser against a real Seatmap Pro event is still
-open.
+`website_event_sale`, and `website_sale` also pass. A buyer has completed a purchase of three seats in a
+browser on a 9671-seat Seatmap Pro demo venue, paid with the Odoo demo payment provider. After payment, the
+three seats were no longer selectable in another browser session.
 
 ## What you need
 
