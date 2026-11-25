@@ -103,17 +103,17 @@ The database also refuses a second attendee for the same seat and slot, unless t
 
 ## Odoo 20.0
 
-The module targets 19.0. A 20.0 branch needs these changes:
+The `20.0` branch of this repository carries the module for Odoo 20.0. It differs from this branch in these points:
 
-- The pre-payment check moves from `_check_cart_is_ready_to_be_paid` to `_is_cart_ready_for_payment` in
-  `sale.order`.
+- The pre-payment check overrides `_is_cart_ready_for_payment` instead of `_check_cart_is_ready_to_be_paid`.
+  When a seat is taken, the buyer sees a checkout alert and Odoo does not start the payment.
+- Access rights are declared in `security/ir.access.csv`, because Odoo 20.0 replaced `ir.model.access`.
+- A ticket can carry additional products in Odoo 20.0. Each seat line gets them as linked lines, and a seat
+  counts as free only when the ticket's total price is zero.
 - Odoo 20.0 copies an attendee for each scan of a multi-use ticket. The seat field is not copied, so the copy
-  does not conflict with the seat's unique index, but check-in reports should read the seat from the main
-  attendee.
+  does not conflict with the seat's unique index. Check-in reports should read the seat from the main attendee.
 - Odoo 20.0 brings an abandoned cart back when the buyer signs in again. The pre-payment check covers seats
   that were released in the meantime.
-
-The templates and controller methods that the module extends have the same names in 20.0.
 
 ## Security
 
