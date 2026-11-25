@@ -175,7 +175,7 @@ class SeatmapEventController(WebsiteEventSaleController):
         tickets = request.env['event.event.ticket'].sudo().browse(
             {data['event_ticket_id'] for data in registration_data if data.get('event_ticket_id')}
         )
-        if all(ticket.price == 0 for ticket in tickets) and not request.cart.id:
+        if all(ticket.total_price == 0 for ticket in tickets) and not request.cart.id:
             # Free seats skip the cart: the registrations are confirmed at once and the unique index
             # protects the seats, so the holds are released.
             registrations = super()._create_attendees_from_registration_post(event, registration_data)
@@ -183,7 +183,7 @@ class SeatmapEventController(WebsiteEventSaleController):
                          ('seat_id', 'in', registrations.seatmap_seat_id.ids)]).unlink()
             return registrations
 
-        order_sudo = request.cart or request.website._create_cart()
+        order_sudo = request.cart or self.env.website._create_cart()
         for data in registration_data:
             ticket = tickets.filtered(lambda t: t.id == data.get('event_ticket_id'))
             seat = request.env['seatmap.seat'].sudo().browse(data['seatmap_seat_id'])
@@ -198,6 +198,8 @@ class SeatmapEventController(WebsiteEventSaleController):
             if not cart_values.get('line_id'):
                 raise UserError(cart_values.get('warning') or _('This ticket is sold out.'))
             line = request.env['sale.order.line'].sudo().browse(cart_values['line_id'])
+            for product in ticket.additional_product_ids:
+                order_sudo._cart_add(product_id=product.id, quantity=1, linked_line_id=line.id)
             data['sale_order_id'] = order_sudo.id
             data['sale_order_line_id'] = line.id
             Lock.search([

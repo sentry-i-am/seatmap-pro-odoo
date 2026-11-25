@@ -1,5 +1,4 @@
 from odoo import _, models
-from odoo.exceptions import ValidationError
 
 
 class SaleOrder(models.Model):
@@ -25,25 +24,28 @@ class SaleOrder(models.Model):
         return new_qty, warning
 
     def _seatmap_hold_cart_seats(self):
-        """Hold every seat of the cart again before payment. Raise if a seat is no longer available."""
+        """Hold every seat of the cart again before payment. Return the seats that are no longer available."""
+        self.ensure_one()
         Lock = self.env['seatmap.seat.lock'].sudo()
-        for order in self:
-            taken = self.env['seatmap.seat']
-            for line in order.order_line.filtered('seatmap_seat_id'):
-                _held, line_taken = Lock._acquire(
-                    line.event_id, line.event_slot_id, line.seatmap_seat_id, f'order-{order.id}', line=line,
-                )
-                taken |= line_taken
-            if taken:
-                raise ValidationError(_(
-                    'These seats are no longer available: %(seats)s. Remove them from your cart and choose '
-                    'other seats.',
-                    seats=', '.join(taken.mapped('display_name')),
-                ))
+        taken = self.env['seatmap.seat']
+        for line in self.order_line.filtered('seatmap_seat_id'):
+            _held, line_taken = Lock._acquire(
+                line.event_id, line.event_slot_id, line.seatmap_seat_id, f'order-{self.id}', line=line,
+            )
+            taken |= line_taken
+        return taken
 
-    def _check_cart_is_ready_to_be_paid(self):
-        super()._check_cart_is_ready_to_be_paid()
-        self._seatmap_hold_cart_seats()
+    def _is_cart_ready_for_payment(self):
+        ready = super()._is_cart_ready_for_payment()
+        taken = self._seatmap_hold_cart_seats()
+        if taken:
+            self._add_blocking_alert(self.env._(
+                'These seats are no longer available: %(seats)s. Remove them from your cart and choose '
+                'other seats.',
+                seats=', '.join(taken.mapped('display_name')),
+            ))
+            return False
+        return ready
 
     def _seatmap_release_locks(self):
         self.env['seatmap.seat.lock'].sudo().search([('sale_order_id', 'in', self.ids)]).unlink()

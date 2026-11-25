@@ -97,6 +97,8 @@ def layout_without(seat_id):
 
 
 class SeatmapEventCommon(TestWebsiteEventSaleCommon):
+    # The module's server-side code runs as the system (cron, sudo in controllers), so the tests do too.
+    _test_user_groups = ()
 
     @classmethod
     def setUpClass(cls):

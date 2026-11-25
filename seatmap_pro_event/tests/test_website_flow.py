@@ -2,7 +2,6 @@ import json
 import re
 from html import unescape
 
-from odoo import http
 from odoo.tests import HttpCase, tagged
 
 from .common import PUBLIC_KEY, SEATMAP_EVENT_ID, TOKEN, SeatmapEventCommon
@@ -41,7 +40,7 @@ class TestWebsiteSeatFlow(HttpCase, SeatmapEventCommon):
         questions = self.event.question_ids
         name = questions.filtered(lambda q: q.question_type == 'name')
         email = questions.filtered(lambda q: q.question_type == 'email')
-        data = {'csrf_token': http.Request.csrf_token(self)}
+        data = {'csrf_token': self.csrf_token()}
         for index, (ticket_id, seat_record_id) in enumerate(seat_fields, start=1):
             data.update({
                 f'{index}-name-{name.id}': f'Buyer {index}',
@@ -135,6 +134,20 @@ class TestWebsiteSeatFlow(HttpCase, SeatmapEventCommon):
         self.assertEqual(registration.state, 'open')
         self.assertFalse(registration.sale_order_id)
         self.assertFalse(self.Lock.search([('seat_id', '=', self.seats[1003].id)]))
+
+    def test_ticket_additional_products_follow_each_seat(self):
+        extra = self.env['product.product'].create({'name': 'Programme', 'list_price': 3, 'type': 'consu'})
+        self.ticket.additional_product_ids = extra
+        self.lock(1000, 1001)
+        form = self.attendee_form(1000, 1001)
+        seat_inputs = dict(re.findall(r'name="(\d+)-seatmap_seat_id" value="(\d+)"', form))
+        self.confirm([(self.ticket.id, seat_inputs[index]) for index in sorted(seat_inputs)])
+        order = self.env['event.registration'].search([('event_id', '=', self.event.id)]).sale_order_id
+        seat_lines = order.order_line.filtered('seatmap_seat_id')
+        self.assertEqual(len(seat_lines), 2)
+        for line in seat_lines:
+            self.assertEqual(line.linked_line_ids.product_id, extra)
+            self.assertEqual(line.linked_line_ids.product_uom_qty, 1)
 
     def test_released_seat_is_free_again(self):
         self.lock(1001)

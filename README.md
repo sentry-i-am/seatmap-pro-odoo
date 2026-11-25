@@ -6,17 +6,16 @@ supplies the venue drawing and the map the buyer clicks on.
 
 The technical name of the module is `seatmap_pro_event`. It depends on `website_event_sale`.
 
-**Status:** early version for Odoo 19.0. The module's 40 tests pass on Odoo 19.0 Community (commit `4104bb5`).
-With the module installed, the post-install tests of `event`, `event_sale`, `website_event`,
-`website_event_sale`, and `website_sale` also pass. A buyer has completed a purchase of three seats in a
-browser on a 9671-seat Seatmap Pro demo venue, paid with the Odoo demo payment provider. After payment, the
-three seats were no longer selectable in another browser session.
+**Status:** early version for Odoo 20.0. The module's 40 tests pass on Odoo 20.0 Community (commit `16c3a60`).
+With the module installed, the post-install tests of `event`, `event_sale`, `website_event`, and
+`website_event_sale` also pass. The purchase in a browser was checked on the 19.0 branch; on 20.0 it is still
+open.
 
 ## What you need
 
 - You have a Seatmap Pro account. Its settings give you an organization token and a public key.
 - The venue is drawn in the Seatmap Pro editor, and an event on that venue is published.
-- You run Odoo 19.0 on your own server or on Odoo.sh, with the **Events** and **eCommerce** apps.
+- You run Odoo 20.0 on your own server or on Odoo.sh, with the **Events** and **eCommerce** apps.
   Odoo Online cannot load modules that contain Python code, so this module does not work there.
 
 ## Install
@@ -88,7 +87,7 @@ The database also refuses a second attendee for the same seat and slot, unless t
   redirects. If you run Seatmap Pro on premise, the server administrator lists its Booking API host in the
   `SEATMAP_PRO_ALLOWED_API_HOSTS` environment variable, for example
   `SEATMAP_PRO_ALLOWED_API_HOSTS=seatmap.example.com`. The **Booking API** setting accepts only these hosts.
-- Odoo 19.0 does not send a Content Security Policy for website pages. If your reverse proxy adds one, allow
+- Odoo 20.0 does not send a Content Security Policy for website pages. If your reverse proxy adds one, allow
   scripts from `https://cdn.jsdelivr.net`, connections to that host and to your Booking API host, and images
   over `https:` for the venue background.
 
@@ -101,19 +100,17 @@ The database also refuses a second attendee for the same seat and slot, unless t
 - A buyer can hold up to 30 seats at once, the Odoo limit for one registration.
 - The module's own texts are in English.
 
-## Odoo 20.0
+## Differences from the 19.0 branch
 
-The module targets 19.0. A 20.0 branch needs these changes:
-
-- The pre-payment check moves from `_check_cart_is_ready_to_be_paid` to `_is_cart_ready_for_payment` in
-  `sale.order`.
+- The pre-payment check overrides `_is_cart_ready_for_payment` instead of `_check_cart_is_ready_to_be_paid`.
+  When a seat is taken, the buyer sees a checkout alert and Odoo does not start the payment.
+- Access rights are declared in `security/ir.access.csv`, because Odoo 20.0 replaced `ir.model.access`.
+- A ticket can carry additional products in Odoo 20.0. Each seat line gets them as linked lines, and a seat
+  counts as free only when the ticket's total price is zero.
 - Odoo 20.0 copies an attendee for each scan of a multi-use ticket. The seat field is not copied, so the copy
-  does not conflict with the seat's unique index, but check-in reports should read the seat from the main
-  attendee.
+  does not conflict with the seat's unique index. Check-in reports should read the seat from the main attendee.
 - Odoo 20.0 brings an abandoned cart back when the buyer signs in again. The pre-payment check covers seats
   that were released in the meantime.
-
-The templates and controller methods that the module extends have the same names in 20.0.
 
 ## Security
 

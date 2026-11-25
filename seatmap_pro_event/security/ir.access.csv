@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_seatmap_zone_desk,seatmap.zone.desk,seatmap.zone,event.group_event_registration_desk,r,
+access_seatmap_zone_user,seatmap.zone.user,seatmap.zone,event.group_event_user,ru,
+access_seatmap_zone_manager,seatmap.zone.manager,seatmap.zone,event.group_event_manager,crud,
+access_seatmap_seat_desk,seatmap.seat.desk,seatmap.seat,event.group_event_registration_desk,r,
+access_seatmap_seat_manager,seatmap.seat.manager,seatmap.seat,event.group_event_manager,crud,
+access_seatmap_seat_lock_manager,seatmap.seat.lock.manager,seatmap.seat.lock,event.group_event_manager,rd,

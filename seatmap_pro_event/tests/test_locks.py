@@ -3,7 +3,6 @@ from datetime import timedelta
 from psycopg2 import IntegrityError
 
 from odoo import fields
-from odoo.exceptions import ValidationError
 from odoo.tests import tagged
 from odoo.tools import mute_logger
 
@@ -139,7 +138,7 @@ class TestSeatLocks(SeatmapEventCommon):
         order = self.make_cart(1000)
         lock = self.Lock.search([('sale_order_id', '=', order.id)])
         self.expire(lock)
-        order._check_cart_is_ready_to_be_paid()
+        self.assertTrue(order._is_cart_ready_for_payment())
         self.assertGreater(lock.expires_at, fields.Datetime.now())
         self.assertEqual(order.order_line.seatmap_seat_id, self.seats[1000])
 
@@ -154,8 +153,8 @@ class TestSeatLocks(SeatmapEventCommon):
             'event_id': self.event.id, 'seat_id': self.seats[1000].id, 'owner': 'pos-order',
             'expires_at': fields.Datetime.now() + timedelta(minutes=10),
         })
-        with self.assertRaises(ValidationError):
-            order._check_cart_is_ready_to_be_paid()
+        self.assertFalse(order._is_cart_ready_for_payment())
+        self.assertTrue(order._has_blocking_alerts())
 
     def test_confirmed_order_keeps_the_seat_without_a_hold(self):
         order = self.make_cart(1000)
