@@ -21,5 +21,11 @@
             'seatmap_pro_event/static/src/scss/seat_picker.scss',
         ],
     },
+    'images': [
+        'static/description/banner.png',
+        'static/description/seat_map_screenshot.png',
+        'static/description/cart_screenshot.png',
+        'static/description/attendees_screenshot.png',
+    ],
     'installable': True,
 }

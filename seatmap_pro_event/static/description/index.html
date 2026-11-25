@@ -1,0 +1,78 @@
+<section style="padding: 32px 16px; max-width: 960px; margin: 0 auto; font-family: Arial, Helvetica, sans-serif; color: #222222;">
+    <div style="text-align: center; margin-bottom: 32px;">
+        <h2 style="font-size: 32px; font-weight: 700; margin: 0 0 12px 0; color: #111111;">Seatmap Pro Seating for Events</h2>
+        <p style="font-size: 18px; line-height: 1.5; margin: 0; color: #444444;">
+            Buyers pick their seats on a Seatmap Pro venue map when they register for an event on your Odoo website.
+        </p>
+    </div>
+
+    <div style="margin-bottom: 32px; text-align: center;">
+        <img src="seat_map_screenshot.png" alt="Seat map on the Odoo event page with three seats selected and the total price below the map" style="max-width: 100%; border: 1px solid #dddddd; border-radius: 8px;"/>
+    </div>
+
+    <p style="font-size: 16px; line-height: 1.6;">
+        The sale itself stays in Odoo, from ticket prices to payment. Seatmap Pro supplies the venue drawing and the
+        map the buyer clicks on. Each seat becomes its own cart line and its own attendee, so the seat appears on the
+        order and in the attendee list.
+    </p>
+
+    <h3 style="font-size: 22px; font-weight: 700; margin: 32px 0 12px 0; color: #111111;">What the module does</h3>
+    <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+        <li>Loads the venue from Seatmap Pro with one button, one record per seat with its sector, row, and number.
+            Each Seatmap Pro pricing zone is mapped to an Odoo ticket.</li>
+        <li>Shows the seat map where Odoo asks how many tickets the buyer wants. Only seats that are free in Odoo can be selected,
+            and they show the price of the mapped ticket.</li>
+        <li>Holds a seat for the buyer from the click on the map until payment, 15 minutes by default. A scheduled
+            action releases expired holds and removes those seats from abandoned carts.</li>
+        <li>Checks every seat again before payment, and the database refuses a second attendee for the same seat.</li>
+        <li>Works with the standard Odoo cart, checkout, payment providers, and events with several time slots.</li>
+        <li>Keeps the Seatmap Pro organization token on your server. The browser receives only the public key and
+            the event ID.</li>
+    </ul>
+
+    <div style="margin: 32px 0; text-align: center;">
+        <img src="cart_screenshot.png" alt="Odoo cart with one line per seat, each showing its row and seat number" style="max-width: 100%; border: 1px solid #dddddd; border-radius: 8px;"/>
+    </div>
+
+    <div style="margin: 32px 0; text-align: center;">
+        <img src="attendees_screenshot.png" alt="Attendee list in the Odoo back end with a Seat column" style="max-width: 100%; border: 1px solid #dddddd; border-radius: 8px;"/>
+    </div>
+
+    <h3 style="font-size: 22px; font-weight: 700; margin: 32px 0 12px 0; color: #111111;">What you need</h3>
+    <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+        <li>A Seatmap Pro account. Its settings give you an organization token and a public key.</li>
+        <li>A venue drawn in the Seatmap Pro editor and a published event on that venue.</li>
+        <li>Odoo 19.0 with the Events and eCommerce apps, on your own server or on Odoo.sh. Odoo Online cannot run
+            modules with Python code.</li>
+    </ul>
+
+    <h3 style="font-size: 22px; font-weight: 700; margin: 32px 0 12px 0; color: #111111;">Set up an event</h3>
+    <ol style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+        <li>In <b>Events &gt; Configuration &gt; Settings</b>, fill in the organization token and the public key in the
+            <b>Seatmap Pro</b> block.</li>
+        <li>Open the event, go to the <b>Seatmap Pro</b> tab, enter the ID of the Seatmap Pro event, and select
+            <b>Load venue</b>.</li>
+        <li>Choose the Odoo ticket sold for each pricing zone.</li>
+    </ol>
+    <p style="font-size: 16px; line-height: 1.6;">
+        On the event page, the <b>Register</b> button becomes <b>Choose seats</b> and opens the map.
+    </p>
+
+    <h3 style="font-size: 22px; font-weight: 700; margin: 32px 0 12px 0; color: #111111;">Limitations</h3>
+    <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
+        <li>Seat selection covers the website. Point of Sale and back-end sales orders do not show the map.</li>
+        <li>The map shows the ticket price. Pricelists and discounts apply in the cart.</li>
+        <li>Standing areas from Seatmap Pro are not imported.</li>
+    </ul>
+
+    <h3 style="font-size: 22px; font-weight: 700; margin: 32px 0 12px 0; color: #111111;">Source code and support</h3>
+    <p style="font-size: 16px; line-height: 1.6;">
+        The source code and the full setup guide are in the
+        <a href="https://github.com/sentry-i-am/seatmap-pro-odoo" target="_blank" rel="noopener">seatmap-pro-odoo repository on GitHub</a>.
+        For questions, write to <a href="mailto:hello@seatmap.pro">hello@seatmap.pro</a>.
+    </p>
+    <p style="font-size: 14px; line-height: 1.6; color: #555555;">
+        The module is licensed under the Apache License 2.0. The Seatmap Pro renderer and services are covered by the
+        <a href="https://seatmap.pro/tos/" target="_blank" rel="noopener">Seatmap Pro terms of service</a>.
+    </p>
+</section>
