@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_event_registration_tree" model="ir.ui.view">
+        <field name="name">event.registration.list.inherit.seatmap.pro</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_event_registration_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='event_ticket_id']" position="after">
+                <field name="seatmap_seat_label" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_event_registration_form" model="ir.ui.view">
+        <field name="name">event.registration.form.inherit.seatmap.pro</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_event_registration_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='event_ticket_id']" position="after">
+                <field name="seatmap_seat_id" invisible="not seatmap_seat_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

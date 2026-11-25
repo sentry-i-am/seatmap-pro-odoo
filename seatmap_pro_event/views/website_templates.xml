@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- The Register button opens the seat map instead of the ticket quantity modal. -->
+    <template id="registration_template" inherit_id="website_event.registration_template" name="Seatmap Pro: register button">
+        <xpath expr="//button[@data-bs-toggle='modal']" position="before">
+            <a t-elif="event.event_registrations_open and event.seatmap_enabled"
+               t-attf-class="btn btn-primary {{cta_additional_classes}}"
+               t-attf-href="/event/{{slug(event)}}/seats">
+                Choose seats
+            </a>
+        </xpath>
+        <xpath expr="//div[@t-if=&quot;registration_error_code == 'insufficient_seats'&quot;]" position="after">
+            <div t-if="registration_error_code == 'seat_taken'" class="alert alert-danger my-3" role="alert">
+                Registration failed! Someone else has booked one of your seats. Choose other seats.
+            </div>
+        </xpath>
+    </template>
+
+    <template id="seat_picker_page" name="Seatmap Pro: seat picker">
+        <t t-call="website_event.layout">
+            <section class="container py-4 o_seatmap_pro_page">
+                <h1 class="h3 mb-3">
+                    <span t-field="event.name"/>
+                    <small t-if="event_slot" class="text-muted ms-2" t-out="event_slot.display_name"/>
+                </h1>
+                <div t-if="registration_error_code == 'seat_taken'" class="alert alert-danger" role="alert">
+                    Someone else has booked one of your seats. Choose other seats.
+                </div>
+                <div t-if="registration_error_code == 'seat_required'" class="alert alert-danger" role="alert">
+                    Choose one seat for every ticket on the map.
+                </div>
+                <t t-if="seatmap_slots and not event_slot">
+                    <p>Choose a date and time.</p>
+                    <ul class="list-unstyled">
+                        <li t-foreach="seatmap_slots" t-as="slot" class="mb-2">
+                            <a t-attf-href="/event/{{slug(event)}}/seats?slot_id={{slot.id}}" t-out="slot.display_name"/>
+                        </li>
+                    </ul>
+                </t>
+                <div t-elif="not seatmap_config" class="alert alert-info" role="status">
+                    Registrations for this event are closed.
+                </div>
+                <div t-else="" class="o_seatmap_pro_picker" t-att-data-seatmap-config="seatmap_config">
+                    <div class="o_seatmap_pro_map border rounded" role="application" aria-label="Venue map"/>
+                    <div class="o_seatmap_pro_message alert alert-warning mt-3 d-none" role="alert"/>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3">
+                        <p class="o_seatmap_pro_summary mb-0" aria-live="polite"/>
+                        <button type="button" class="btn btn-primary o_seatmap_pro_submit" disabled="disabled">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </t>
+    </template>
+
+    <!-- One hidden seat field per attendee, read through _get_website_registration_allowed_fields. -->
+    <template id="registration_attendee_details" inherit_id="website_event.registration_attendee_details" name="Seatmap Pro: attendee seats">
+        <xpath expr="//input[@t-attf-name='#{counter}-event_ticket_id']" position="after">
+            <input t-if="seatmap_seats_by_ticket" type="hidden" t-attf-name="#{counter}-seatmap_seat_id"
+                   t-att-value="seatmap_seats_by_ticket[ticket['id']][att_counter - 1].id"/>
+        </xpath>
+        <xpath expr="//div[hasclass('modal-header')]" position="after">
+            <div t-if="seatmap_seats_by_ticket" class="modal-body border-bottom o_seatmap_pro_seats">
+                <h5 class="h6">Your seats</h5>
+                <ul class="mb-0">
+                    <t t-foreach="seatmap_seats_by_ticket.values()" t-as="ticket_seats">
+                        <li t-foreach="ticket_seats" t-as="seat">
+                            <span t-out="seat.display_name"/>
+                            <small class="text-muted ms-1" t-out="seat.ticket_id.name"/>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

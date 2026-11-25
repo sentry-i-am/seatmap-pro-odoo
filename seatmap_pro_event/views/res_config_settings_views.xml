@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.seatmap.pro</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="event.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='registration_setting_container']" position="after">
+                <block title="Seatmap Pro" name="seatmap_pro_setting_container" groups="base.group_system">
+                    <setting id="seatmap_pro_connection" string="Seatmap Pro connection"
+                             help="Buyers pick seats on your Seatmap Pro venue maps. The organization token stays on this server.">
+                        <div class="content-group">
+                            <div class="row mt-2">
+                                <label for="seatmap_token_input" string="Organization token" class="col-lg-4 o_light_label"/>
+                                <field name="seatmap_token_input" password="True"
+                                       placeholder="Paste a new token to replace the stored one"/>
+                            </div>
+                            <div class="row" invisible="not seatmap_token_is_set">
+                                <span class="col-lg-4"/>
+                                <span class="col text-muted">A token is stored.</span>
+                            </div>
+                            <field name="seatmap_token_is_set" invisible="1"/>
+                            <div class="row mt-2">
+                                <label for="seatmap_public_key" string="Public key" class="col-lg-4 o_light_label"/>
+                                <field name="seatmap_public_key"/>
+                            </div>
+                            <div class="row mt-2">
+                                <label for="seatmap_api_url" string="Booking API" class="col-lg-4 o_light_label"/>
+                                <field name="seatmap_api_url" placeholder="https://booking.seatmap.pro"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

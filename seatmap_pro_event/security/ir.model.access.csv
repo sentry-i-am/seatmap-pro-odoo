@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_seatmap_zone_desk,seatmap.zone.desk,model_seatmap_zone,event.group_event_registration_desk,1,0,0,0
+access_seatmap_zone_user,seatmap.zone.user,model_seatmap_zone,event.group_event_user,1,1,0,0
+access_seatmap_zone_manager,seatmap.zone.manager,model_seatmap_zone,event.group_event_manager,1,1,1,1
+access_seatmap_seat_desk,seatmap.seat.desk,model_seatmap_seat,event.group_event_registration_desk,1,0,0,0
+access_seatmap_seat_manager,seatmap.seat.manager,model_seatmap_seat,event.group_event_manager,1,1,1,1
+access_seatmap_seat_lock_manager,seatmap.seat.lock.manager,model_seatmap_seat_lock,event.group_event_manager,1,0,0,1

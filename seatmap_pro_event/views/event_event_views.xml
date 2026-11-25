@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="event_event_view_form" model="ir.ui.view">
+        <field name="name">event.event.view.form.inherit.seatmap.pro</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='tickets']" position="after">
+                <page string="Seatmap Pro" name="seatmap_pro">
+                    <group>
+                        <group>
+                            <field name="seatmap_event_id"/>
+                            <field name="seatmap_hold_minutes"/>
+                            <field name="seatmap_enabled" invisible="1"/>
+                        </group>
+                        <group invisible="not seatmap_imported_at">
+                            <field name="seatmap_venue_name"/>
+                            <field name="seatmap_seat_count"/>
+                            <field name="seatmap_imported_at"/>
+                        </group>
+                    </group>
+                    <div class="mb-3" invisible="not seatmap_event_id">
+                        <button name="action_seatmap_import" type="object" string="Load venue" class="btn-secondary"/>
+                    </div>
+                    <p class="text-muted" invisible="not seatmap_zone_ids">
+                        Choose the ticket sold for each pricing zone. Seats of a zone without a ticket are not for sale.
+                    </p>
+                    <field name="seatmap_zone_ids" invisible="not seatmap_zone_ids">
+                        <list editable="bottom" create="0" delete="0">
+                            <field name="event_id" column_invisible="1"/>
+                            <field name="name"/>
+                            <field name="zone_id" optional="hide"/>
+                            <field name="seat_count"/>
+                            <field name="ticket_id" options="{'no_create': True}"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
